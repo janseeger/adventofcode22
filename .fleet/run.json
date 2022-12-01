@@ -2,8 +2,11 @@
     "configurations": [
         {
             "type": "docker-build",
-            "name": "compile & run",
-            "file": "Dockerfile",
+            "name": "run day1",
+            "file": "day1/Dockerfile",
+            "environment": {
+                "BUILDKIT_PROGRESS": "plain"
+            },
         },
     ]
 }

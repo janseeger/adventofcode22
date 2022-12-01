@@ -1,3 +1,0 @@
-main: () -> int = {
-    std::cout << "hello world!";
-}
