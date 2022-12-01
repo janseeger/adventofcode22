@@ -1,3 +1,25 @@
 main: () -> int = {
-    std::cout << "Advent of code";
+    elves := readElves("input.txt");
+    maxCalories := std::max_element(elves.begin(), elves.end());
+    std::cout << "The elf with the most calories carries " << maxCalories* << " calories" << std::endl;
+}
+
+readElves: (filename: std::string) -> std::vector<int> = {
+    elves := std::vector<int>();
+    file := std::ifstream(filename);
+    if (file.is_open()) {
+        currentElf := 0;
+        line: std::string = "";
+        while (std::getline(file, line)) {
+            calories := atoi(line.c_str());
+            if (calories == 0) {
+                elves.push_back(currentElf);
+                currentElf = 0;
+            } else {
+                currentElf += calories;
+            }
+        }
+        file.close();
+    }
+    return elves;
 }
