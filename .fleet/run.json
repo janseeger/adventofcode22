@@ -8,5 +8,13 @@
                 "BUILDKIT_PROGRESS": "plain"
             },
         },
+        {
+            "type": "docker-build",
+            "name": "run day2",
+            "file": "day2/Dockerfile",
+            "environment": {
+                "BUILDKIT_PROGRESS": "plain"
+            },
+        },
     ]
 }
