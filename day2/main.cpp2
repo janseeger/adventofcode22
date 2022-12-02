@@ -1,2 +1,81 @@
 main: () -> int = {
+    std::cout << readStategyGuide("input.txt") << std::endl;
+}
+
+moveDelimiter := " ";
+
+readStategyGuide: (filename: std::string) -> int = {
+    file := std::ifstream(filename);
+    totalCount := 0;
+    if (file.is_open()) {
+        moveSet: std::string = "";
+        while (std::getline(file, moveSet)) {
+            opponentMove := moveSet.substr(0, moveSet.find(moveDelimiter));
+            ownMove := moveSet.substr(moveSet.find(moveDelimiter)+1, moveSet.length());
+            totalCount += calculateMoveResult(opponentMove, ownMove);
+        }
+        file.close();
+    }
+    return totalCount;
+}
+
+calculateMoveResult: (opponentInput: _, ownInput: _) -> uint = {
+    opponentMove := mapOpponentMove(opponentInput);
+    ownMove := mapOwnMove(ownInput);
+    return determineResult(opponentMove, ownMove) + ownMove;
+}
+
+determineResult: (opponentMove: _, ownMove: _) -> uint = {
+    if (opponentMove == ownMove) {
+        return 3; // draw
+    }
+
+    if (opponentMove == 1 && ownMove == 3) {
+        return 0; // lost
+    }
+
+    if (opponentMove == 3 && ownMove == 1) {
+        return 6; // won
+    }
+
+    if (opponentMove < ownMove) {
+        return 6; // won
+    }
+
+    return 0; // lost
+}
+
+mapOpponentMove: (opponentMove: std::string) -> int = {
+    if (opponentMove == "A") {
+        // should be an enum type
+        return 1; // Rock
+    }
+
+    if (opponentMove == "B") {
+        return 2; // Paper
+    }
+
+    if (opponentMove == "C") {
+        return 3; // Scissors
+    }
+
+    // should probably throw a parsing exception!
+    return 0;
+}
+
+mapOwnMove: (ownMove: std::string) -> int = {
+    if (ownMove == "X") {
+        return 1; // Rock
+    }
+
+    if (ownMove == "Y") {
+        return 2; // Paper
+    }
+
+    if (ownMove == "Z") {
+        return 3; // Scissors
+    }
+
+    // should probably throw a parsing exception!
+    return 0;
 }

@@ -1,6 +1,6 @@
 FROM cppfront
 
-ADD day1 /source
+ADD day2 /source
 WORKDIR /source
 
 RUN cppfront -p main.cpp2
