@@ -1,7 +1,9 @@
 main: () -> int = {
     elves := readElves("input.txt");
-    maxCalories := std::max_element(elves.begin(), elves.end());
+    maxCalories := std::max_element(elves.cbegin(), elves.cend());
     std::cout << "The elf with the most calories carries " << maxCalories* << " calories" << std::endl;
+    max3Calories := calcMax3Calories(elves);
+    std::cout << "The combined calories of the top 3 elves is " << max3Calories << std::endl;
 }
 
 readElves: (filename: std::string) -> std::vector<int> = {
@@ -22,4 +24,10 @@ readElves: (filename: std::string) -> std::vector<int> = {
         file.close();
     }
     return elves;
+}
+
+calcMax3Calories: (copy elves: std::vector<int>) -> int = {
+    std::sort(elves.begin(), elves.end());
+    std::reverse(elves.begin(), elves.end());
+    return elves.begin()* + (elves.begin()+1)* + (elves.begin()+2)*;
 }
