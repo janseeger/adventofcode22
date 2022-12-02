@@ -1,28 +1,25 @@
 main: () -> int = {
-    std::cout << readStategyGuide("input.txt") << std::endl;
+    std::cout << "original strategy guide: " << readOriginalStategyGuide("input.txt") << std::endl;
+    std::cout << "corrected strategy guide: " << readCorrectedStategyGuide("input.txt") << std::endl;
 }
 
 moveDelimiter := " ";
 
-readStategyGuide: (filename: std::string) -> int = {
+readOriginalStategyGuide: (filename: std::string) -> int = {
     file := std::ifstream(filename);
     totalCount := 0;
     if (file.is_open()) {
         moveSet: std::string = "";
         while (std::getline(file, moveSet)) {
-            opponentMove := moveSet.substr(0, moveSet.find(moveDelimiter));
-            ownMove := moveSet.substr(moveSet.find(moveDelimiter)+1, moveSet.length());
-            totalCount += calculateMoveResult(opponentMove, ownMove);
+            opponentInput := moveSet.substr(0, moveSet.find(moveDelimiter));
+            ownInput := moveSet.substr(moveSet.find(moveDelimiter)+1, moveSet.length());
+            opponentMove := mapOpponentMove(opponentInput);
+            ownMove := mapOwnMove(ownInput);
+            totalCount += determineResult(opponentMove, ownMove) + ownMove;
         }
         file.close();
     }
     return totalCount;
-}
-
-calculateMoveResult: (opponentInput: _, ownInput: _) -> uint = {
-    opponentMove := mapOpponentMove(opponentInput);
-    ownMove := mapOwnMove(ownInput);
-    return determineResult(opponentMove, ownMove) + ownMove;
 }
 
 determineResult: (opponentMove: _, ownMove: _) -> uint = {
@@ -78,4 +75,58 @@ mapOwnMove: (ownMove: std::string) -> int = {
 
     // should probably throw a parsing exception!
     return 0;
+}
+
+readCorrectedStategyGuide: (filename: std::string) -> int = {
+    file := std::ifstream(filename);
+    totalCount := 0;
+    if (file.is_open()) {
+        moveSet: std::string = "";
+        while (std::getline(file, moveSet)) {
+            opponentInput := moveSet.substr(0, moveSet.find(moveDelimiter));
+            outcomeInput := moveSet.substr(moveSet.find(moveDelimiter)+1, moveSet.length());
+            opponentMove := mapOpponentMove(opponentInput);
+            expectedOutcome := mapExpectedOutcome(outcomeInput);
+            totalCount += determineOwnMove(opponentMove, expectedOutcome) + expectedOutcome;
+        }
+        file.close();
+    }
+    return totalCount;
+}
+
+mapExpectedOutcome: (outcome: std::string) -> int = {
+    if (outcome == "X") {
+        return 0; // lose
+    }
+
+    if (outcome == "Y") {
+        return 3; // draw
+    }
+
+    if (outcome == "Z") {
+        return 6; // win
+    }
+
+    // should probably throw a parsing exception!
+    return 0;
+}
+
+determineOwnMove: (opponentMove: _, expectedOutcome: _) -> int = {
+    if (expectedOutcome == 3) {
+        return opponentMove;
+    }
+
+    if (expectedOutcome == 6) {
+        if (opponentMove == 3) { // Scissors
+            return 1; // Rock
+        } else {
+            return opponentMove+1;
+        }
+    }
+
+    if (opponentMove == 1) { // Rock
+        return 3; // Scissors
+    } else {
+        return opponentMove-1;
+    }
 }
